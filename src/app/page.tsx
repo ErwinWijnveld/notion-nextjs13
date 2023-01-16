@@ -1,4 +1,4 @@
-export const revalidate = 10;
+export const revalidate = 30;
 
 import { Page } from '@/@types/pages';
 import Blocks from '@/components/Blocks';
