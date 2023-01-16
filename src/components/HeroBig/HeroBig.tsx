@@ -7,8 +7,6 @@ import ImageButton from './ImageButton';
 
 const HeroBig = ({ block }: any) => {
 	// const text = getHTML()
-	console.log(block);
-	console.log(block[5]);
 	return (
 		<section className="realtive ">
 			<div className="absolute top-[25%] -left-[35px] w-[95px] aspect-square bg-darkBlue rounded-full" />

@@ -1,3 +1,5 @@
+export const revalidate = 10;
+
 import { Page } from '@/@types/pages';
 import Blocks from '@/components/Blocks';
 import ImageContent from '@/components/ImageContent';
