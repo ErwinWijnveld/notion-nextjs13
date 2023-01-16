@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import 'fonts';
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    @apply mb-2;
+    @apply text-darkBlue;
+}
+
+h1 {
+    @apply text-4xl;
+    @apply md:text-5xl;
+    @apply font-bold;
+    @apply leading-heading;
+    @apply uppercase;
+}
+
+h2 {
+    @apply text-3xl;
+    @apply md:text-4xl;
+    @apply leading-heading;
+    @apply font-bold;
+    @apply uppercase;
+}
+
+h3 {
+    @apply text-2xl;
+    @apply md:text-3xl;
+    @apply leading-heading;
+    @apply font-normal;
+}
+
+h4 {
+    @apply text-xl;
+    @apply md:text-2xl;
+    @apply leading-heading;
+    @apply font-normal;
+}
+
+p {
+    @apply mb-4;
+}
+
+#block-builder {
+    display: none;
+}
