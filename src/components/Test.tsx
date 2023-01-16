@@ -1,8 +1,8 @@
-import { getPage } from '@/lib/axios';
+import { getHomePage } from '@/lib/api/pages';
 import { useEffect } from 'react';
 
 const Test = async ({ page }: any) => {
-	console.log(await getPage('50ef0039fc2e4797aeaf21cc60161a01'));
+	console.log(await getHomePage());
 	return <div>Test</div>;
 };
 export default Test;

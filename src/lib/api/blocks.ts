@@ -7,60 +7,70 @@ export async function getBlocks(blocks:any) {
     if(!blocks) return null
 
     const blockChildren = await Promise.all(blocks.map(async (block:any) => {
-
-        // get block children (child pages)
-        const children = await getRecursiveChildPages(block)
+        // get block children
+        const children = await notionClient.blocks.children.list({
+            block_id: block.id,
+        })
 
         // get block page data
         const page = await notionClient.pages.retrieve({ page_id: block.id }) as any
 
+        const test = await recursiveFormatFields(children?.results)
+
         return {
             type: page?.properties?.Type?.select?.name,
-            children: children
+            test: test,
+            children: test,
+            // children: children?.results
         }
     }))
 
     return blockChildren
-
-    async function getRecursiveChildPages(parentBlock:any) {
-
-        // list of child blocks without data
-        const children = await notionClient.blocks.children.list({
-            block_id: parentBlock.id,
-        })
-
-        // filter child blocks to only get child pages
-        const childPages = children.results.filter((child:any) => child.type === 'child_page')
-
-        const childPagesWithChildren = await Promise.all(childPages.map(async (childPage:any) => {
-            return await getRecursiveChildPages(childPage)
-        })) as any
-
-        // return all other child blocks
-        const childBlocks = formatBlocks(children?.results.filter((child:any) => child.type !== 'child_page'))
-
-        return {
-            fields: childBlocks?.length > 0 ? childBlocks : null,
-            children: childPagesWithChildren?.length > 0 ? childPagesWithChildren : null
-        }
-
-    }
-
-    function formatBlocks(blocks:any) {
-        return blocks?.map((child:any) => {
-            if(child.type === 'image') {
-                return {
-                    type: child.type,
-                    [child.type]: getImage(child[child.type])
-                }
-            }
-            return {
-                type: child.type,
-                [child.type]: child[child.type]
-            }
-        })
-    }
 }
 
+export async function recursiveFormatFields(blocks:any) {
+    if(!blocks) return null
+    const formattedBlocks = Promise.all(blocks.map(async (block:any) => {
+        if(block?.[block?.type].is_toggleable && block?.has_children) {
+            const children = await getBlockChildren(block)
 
+            const formattedBlocks = await formatBlocks(children.results)
+            return {fields: formattedBlocks}
+        }
+    }))
 
+    return formattedBlocks
+}
+
+async function formatBlocks(blocks:any) {
+    return await Promise.all(blocks?.map(async (child:any) => {
+        if(child?.[child.type]?.is_toggleable) {
+            const children = await getBlockChildren(child)
+            const formattedBlocks = await formatBlocks(children.results)
+            return {
+                type: child.type,
+                [child.type]: child[child.type],
+                fields: formattedBlocks
+            }
+        }
+
+        if(child.type === 'image') {
+            return {
+                type: child.type,
+                [child.type]: getImage(child[child.type])
+            }
+        }
+        return {
+            type: child.type,
+            [child.type]: child[child.type]
+        }
+    }))
+}
+
+async function getBlockChildren(block:any) {
+    const children = await notionClient.blocks.children.list({
+        block_id: block.id,
+    })
+
+    return children
+}

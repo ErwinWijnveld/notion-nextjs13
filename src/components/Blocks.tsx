@@ -7,9 +7,7 @@ const Blocks = ({ page }: any) => {
 	blocks?.map((block: any, index: number) => {
 		switch (block?.type) {
 			case 'hero-big':
-				partials.push(
-					<HeroBig block={block.children.children} key={index} />
-				);
+				partials.push(<HeroBig block={block.children} key={index} />);
 				break;
 			default:
 				return <div>No fields</div>;
